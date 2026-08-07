@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BPB3 Check-in</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    body { margin:0; font-family:Georgia,serif; background:#4A1229; color:#F5E9DA; text-align:center; }
+    .header { padding:16px; font-size:20px; color:#E8B54A; font-weight:bold; }
+    #reader { max-width:340px; margin:0 auto; border:2px solid #E8B54A; border-radius:12px; overflow:hidden; }
+    .card { max-width:340px; margin:16px auto; padding:22px; border-radius:14px; }
+    .ok  { background:#1d6b3a; }
+    .bad { background:#8f1d1d; }
+    .wait{ background:#6b5a1d; }
+    .big { font-size:24px; font-weight:bold; }
+    .name{ font-size:30px; margin-top:10px; color:#fff; }
+    .adm { font-size:22px; margin-top:6px; color:#E8B54A; font-weight:bold; }
+    .id  { margin-top:10px; font-size:14px; opacity:.8; letter-spacing:1px; }
+    .next{ margin-top:6px; padding:14px 28px; font-size:18px; border:none; border-radius:10px;
+           background:#E8B54A; color:#4A1229; font-weight:bold; }
+    .manual { margin:22px auto; }
+    .manual input { padding:12px; font-size:18px; border-radius:8px; border:none; width:170px; text-align:center; }
+    .manual button { padding:12px 18px; font-size:18px; border-radius:8px; border:none;
+                     background:#F5E9DA; color:#4A1229; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <div class="header">बाईपण भारी 3.0 — Entry Check-in</div>
+  <div id="reader"></div>
+  <button id="startBtn" class="next" onclick="startScanner()">📷 Start camera</button>
+  <div id="result"></div>
+  <div class="manual">
+    <input id="manualId" placeholder="Ticket no. e.g. 042" inputmode="numeric">
+    <button onclick="manualCheck()">Check</button>
+  </div>
+
+  <script>
+    // ===== CONFIG: paste your Apps Script /exec URL here =====
+    const API = 'https://script.google.com/macros/s/AKfycbxh3kl8PDG8PZZCYqoRI5ihv_6t3RP2NrgnWN2NoQCuK50CrmfBQBDUR22k0iTJEmkufg/exec';
+    // =========================================================
+
+    let scanner;
+
+    function startScanner() {
+      document.getElementById('result').innerHTML = '';
+      document.getElementById('startBtn').style.display = 'none';
+
+      if (typeof Html5Qrcode === 'undefined') {
+        showError('Scanner library failed to load — check internet, or use the manual box below.');
+        return;
+      }
+
+      scanner = new Html5Qrcode('reader');
+      scanner.start({ facingMode: 'environment' }, { fps: 10, qrbox: 220 }, onScan)
+        .catch(function(err) {
+          document.getElementById('startBtn').style.display = '';
+          showError('Camera not available: ' + err + '<br><br>Use the manual box below.');
+        });
+    }
+
+    function showError(msg) {
+      document.getElementById('result').innerHTML =
+        '<div class="card bad" style="font-size:15px;">' + msg + '</div>';
+    }
+
+    function onScan(text) {
+      scanner.stop().then(() => scanner.clear());
+      lookup(text);
+    }
+
+    function manualCheck() {
+      let v = document.getElementById('manualId').value.trim();
+      if (!v) return;
+      if (/^\d+$/.test(v)) v = 'BPB3-' + v.padStart(3, '0');
+      document.getElementById('manualId').value = '';
+      if (scanner) { try { scanner.stop().then(() => scanner.clear()); } catch (e) {} }
+      document.getElementById('startBtn').style.display = 'none';
+      lookup(v);
+    }
+
+    function lookup(id) {
+      document.getElementById('result').innerHTML =
+        '<div class="card wait">Checking ' + id + '…</div>';
+      fetch(API + '?ticket=' + encodeURIComponent(id))
+        .then(r => r.json())
+        .then(show)
+        .catch(fail);
+    }
+
+    function show(r) {
+      let html;
+      if (r.ok) {
+        html = '<div class="card ok"><div class="big">✅ WELCOME</div>' +
+               '<div class="name">' + r.name + '</div>' +
+               '<div class="adm">Admit ' + r.tickets + '</div>' +
+               '<div class="id">' + r.id + '</div></div>';
+      } else {
+        html = '<div class="card bad"><div class="big">⛔ ' + r.msg + '</div>' +
+               (r.name ? '<div class="name">' + r.name + '</div>' : '') +
+               '<div class="id">' + (r.id || '') + '</div></div>';
+      }
+      html += '<button class="next" onclick="startScanner()">📷 Scan next</button>';
+      document.getElementById('result').innerHTML = html;
+    }
+
+    function fail(e) {
+      document.getElementById('result').innerHTML =
+        '<div class="card bad">Connection error — check internet and try again</div>' +
+        '<button class="next" onclick="startScanner()">Retry</button>';
+    }
+  </script>
+</body>
+</html>
