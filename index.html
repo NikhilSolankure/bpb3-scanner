@@ -1,39 +1,184 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BPB3 Check-in</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>बाईपण भारी 3.0 — Check-in</title>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { margin:0; font-family:Georgia,serif; background:#4A1229; color:#F5E9DA; text-align:center; }
-    .header { padding:16px; font-size:20px; color:#E8B54A; font-weight:bold; }
-    #reader { max-width:340px; margin:0 auto; border:2px solid #E8B54A; border-radius:12px; overflow:hidden; }
-    .card { max-width:340px; margin:16px auto; padding:22px; border-radius:14px; }
-    .ok  { background:#1d6b3a; }
-    .bad { background:#8f1d1d; }
-    .wait{ background:#6b5a1d; }
-    .big { font-size:24px; font-weight:bold; }
-    .name{ font-size:30px; margin-top:10px; color:#fff; }
-    .adm { font-size:22px; margin-top:6px; color:#E8B54A; font-weight:bold; }
-    .id  { margin-top:10px; font-size:14px; opacity:.8; letter-spacing:1px; }
-    .next{ margin-top:6px; padding:14px 28px; font-size:18px; border:none; border-radius:10px;
-           background:#E8B54A; color:#4A1229; font-weight:bold; }
-    .manual { margin:22px auto; }
-    .manual input { padding:12px; font-size:18px; border-radius:8px; border:none; width:170px; text-align:center; }
-    .manual button { padding:12px 18px; font-size:18px; border-radius:8px; border:none;
-                     background:#F5E9DA; color:#4A1229; font-weight:bold; }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+    body {
+      min-height:100vh;
+      font-family:'Inter',sans-serif;
+      background:radial-gradient(ellipse at top, #5c1733 0%, #4A1229 45%, #35081b 100%);
+      color:#F5E9DA;
+      display:flex; flex-direction:column; align-items:center;
+      padding:0 16px 40px;
+    }
+
+    /* ---------- Header ---------- */
+    .header { text-align:center; padding:26px 0 18px; }
+    .header .event {
+      font-family:'Playfair Display',serif;
+      font-size:30px; font-weight:700; color:#E8B54A;
+      text-shadow:0 2px 12px rgba(232,181,74,.25);
+    }
+    .header .sub {
+      margin-top:5px; font-size:12px; font-weight:600;
+      letter-spacing:3px; text-transform:uppercase; color:#c9a98f;
+    }
+    .divider {
+      width:64px; height:2px; margin:14px auto 0;
+      background:linear-gradient(90deg, transparent, #E8B54A, transparent);
+    }
+
+    /* ---------- Scanner ---------- */
+    .scan-wrap {
+      position:relative; width:100%; max-width:340px;
+      border-radius:20px; overflow:hidden;
+      border:1.5px solid rgba(232,181,74,.55);
+      box-shadow:0 12px 40px rgba(0,0,0,.45), 0 0 0 6px rgba(232,181,74,.06);
+      background:#2a0715;
+    }
+    #reader { width:100%; }
+    #reader video { display:block; }
+
+    .scanline {
+      position:absolute; left:8%; right:8%; height:2px; top:15%;
+      background:linear-gradient(90deg, transparent, #E8B54A, transparent);
+      box-shadow:0 0 12px 2px rgba(232,181,74,.6);
+      animation:sweep 2.2s ease-in-out infinite;
+      pointer-events:none; display:none;
+    }
+    .scanning .scanline { display:block; }
+    @keyframes sweep { 0%,100% { top:15%; } 50% { top:82%; } }
+
+    .scan-idle {
+      padding:44px 24px; text-align:center; color:#c9a98f; font-size:14px; line-height:1.6;
+    }
+    .scan-idle .icon { font-size:40px; margin-bottom:10px; }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      margin-top:18px; padding:15px 34px;
+      font-family:'Inter',sans-serif; font-size:16px; font-weight:700;
+      color:#4A1229; background:linear-gradient(180deg, #f0c366, #E8B54A);
+      border:none; border-radius:14px; cursor:pointer;
+      box-shadow:0 6px 18px rgba(232,181,74,.35);
+      transition:transform .12s ease;
+    }
+    .btn:active { transform:scale(.96); }
+    .btn.ghost {
+      background:transparent; color:#E8B54A;
+      border:1.5px solid rgba(232,181,74,.6); box-shadow:none;
+    }
+
+    /* ---------- Result cards ---------- */
+    .card {
+      width:100%; max-width:340px; margin-top:20px;
+      padding:26px 22px; border-radius:20px; text-align:center;
+      animation:pop .35s cubic-bezier(.2,1.2,.4,1);
+      box-shadow:0 14px 40px rgba(0,0,0,.4);
+    }
+    @keyframes pop { from { opacity:0; transform:translateY(14px) scale(.96); } }
+
+    .card.ok  { background:linear-gradient(160deg, #1f7a42, #145c30); }
+    .card.bad { background:linear-gradient(160deg, #a32424, #7c1616); }
+    .card.wait{ background:linear-gradient(160deg, #7a6420, #5c4a14); }
+
+    .card .status {
+      font-size:13px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase;
+      opacity:.95;
+    }
+    .card .name {
+      font-family:'Playfair Display',serif;
+      font-size:32px; font-weight:700; color:#fff; margin-top:10px; line-height:1.2;
+      word-break:break-word;
+    }
+    .card .admit-chip {
+      display:inline-block; margin-top:14px; padding:9px 22px;
+      background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.35);
+      border-radius:999px; font-size:19px; font-weight:700; color:#ffe9b8;
+    }
+    .card .detail { margin-top:12px; font-size:14px; opacity:.9; line-height:1.5; }
+    .card .tid {
+      margin-top:14px; font-size:12px; letter-spacing:2px; opacity:.7; font-weight:600;
+    }
+
+    /* ---------- Manual entry ---------- */
+    .manual {
+      margin-top:30px; width:100%; max-width:340px; text-align:center;
+    }
+    .manual .label {
+      font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase;
+      color:#c9a98f; margin-bottom:10px;
+    }
+    .manual .row {
+      display:flex; align-items:stretch; gap:8px; justify-content:center;
+    }
+    .prefix {
+      display:flex; align-items:center; padding:0 14px;
+      background:rgba(232,181,74,.12); border:1.5px solid rgba(232,181,74,.4);
+      border-radius:12px; font-weight:700; font-size:17px; color:#E8B54A;
+      letter-spacing:1px;
+    }
+    .manual input {
+      width:110px; padding:14px 12px; font-size:20px; font-weight:600;
+      text-align:center; letter-spacing:3px;
+      color:#4A1229; background:#F5E9DA;
+      border:none; border-radius:12px; outline:none;
+      font-family:'Inter',sans-serif;
+    }
+    .manual input::placeholder { color:#b09b86; letter-spacing:1px; font-size:15px; }
+    .manual button {
+      padding:0 22px; font-size:16px; font-weight:700;
+      color:#4A1229; background:linear-gradient(180deg, #fbf2e3, #F5E9DA);
+      border:none; border-radius:12px; cursor:pointer;
+      font-family:'Inter',sans-serif;
+    }
+    .manual button:active { transform:scale(.96); }
+
+    .footer {
+      margin-top:auto; padding-top:36px; font-size:11px; color:#8f6f5c;
+      letter-spacing:1px; text-align:center;
+    }
   </style>
 </head>
 <body>
-  <div class="header">बाईपण भारी 3.0 — Entry Check-in</div>
-  <div id="reader"></div>
-  <button id="startBtn" class="next" onclick="startScanner()">📷 Start camera</button>
-  <div id="result"></div>
-  <div class="manual">
-    <input id="manualId" placeholder="Ticket no. e.g. 042" inputmode="numeric">
-    <button onclick="manualCheck()">Check</button>
+
+  <div class="header">
+    <div class="event">बाईपण भारी 3.0</div>
+    <div class="sub">Entry Check-in</div>
+    <div class="divider"></div>
   </div>
+
+  <div class="scan-wrap" id="scanWrap">
+    <div id="reader"></div>
+    <div class="scan-idle" id="scanIdle">
+      <div class="icon">🎟️</div>
+      Tap <b>Start camera</b> and point at the<br>QR code on the guest's pass
+    </div>
+    <div class="scanline"></div>
+  </div>
+
+  <button id="startBtn" class="btn" onclick="startScanner()">📷 Start camera</button>
+
+  <div id="result" style="width:100%;max-width:340px;"></div>
+
+  <div class="manual">
+    <div class="label">Or enter ticket number</div>
+    <div class="row">
+      <div class="prefix">BPB3–</div>
+      <input id="manualId" placeholder="e.g. 042" inputmode="numeric" maxlength="4"
+             onkeydown="if(event.key==='Enter')manualCheck()">
+      <button onclick="manualCheck()">Check</button>
+    </div>
+  </div>
+
+  <div class="footer">Sister Quad Team · Kolhapur · 6 September 2026</div>
 
   <script>
     // ===== CONFIG: paste your Apps Script /exec URL here =====
@@ -45,9 +190,11 @@
     function startScanner() {
       document.getElementById('result').innerHTML = '';
       document.getElementById('startBtn').style.display = 'none';
+      document.getElementById('scanIdle').style.display = 'none';
+      document.getElementById('scanWrap').classList.add('scanning');
 
       if (typeof Html5Qrcode === 'undefined') {
-        showError('Scanner library failed to load — check internet, or use the manual box below.');
+        showError('Scanner library failed to load. Check internet, or use the ticket number box below.');
         return;
       }
 
@@ -55,17 +202,24 @@
       scanner.start({ facingMode: 'environment' }, { fps: 10, qrbox: 220 }, onScan)
         .catch(function(err) {
           document.getElementById('startBtn').style.display = '';
-          showError('Camera not available: ' + err + '<br><br>Use the manual box below.');
+          document.getElementById('scanIdle').style.display = '';
+          document.getElementById('scanWrap').classList.remove('scanning');
+          showError('Camera not available: ' + err + '<br><br>Use the ticket number box below.');
         });
+    }
+
+    function stopScanner() {
+      document.getElementById('scanWrap').classList.remove('scanning');
+      if (scanner) { try { scanner.stop().then(() => scanner.clear()); } catch (e) {} }
     }
 
     function showError(msg) {
       document.getElementById('result').innerHTML =
-        '<div class="card bad" style="font-size:15px;">' + msg + '</div>';
+        '<div class="card bad"><div class="detail">' + msg + '</div></div>';
     }
 
     function onScan(text) {
-      scanner.stop().then(() => scanner.clear());
+      stopScanner();
       lookup(text);
     }
 
@@ -74,14 +228,17 @@
       if (!v) return;
       if (/^\d+$/.test(v)) v = 'BPB3-' + v.padStart(3, '0');
       document.getElementById('manualId').value = '';
-      if (scanner) { try { scanner.stop().then(() => scanner.clear()); } catch (e) {} }
+      document.getElementById('manualId').blur();
+      stopScanner();
       document.getElementById('startBtn').style.display = 'none';
+      document.getElementById('scanIdle').style.display = 'none';
       lookup(v);
     }
 
     function lookup(id) {
       document.getElementById('result').innerHTML =
-        '<div class="card wait">Checking ' + id + '…</div>';
+        '<div class="card wait"><div class="status">Checking</div>' +
+        '<div class="name" style="font-size:22px;">' + id + '</div></div>';
       fetch(API + '?ticket=' + encodeURIComponent(id))
         .then(r => r.json())
         .then(show)
@@ -91,23 +248,32 @@
     function show(r) {
       let html;
       if (r.ok) {
-        html = '<div class="card ok"><div class="big">✅ WELCOME</div>' +
-               '<div class="name">' + r.name + '</div>' +
-               '<div class="adm">Admit ' + r.tickets + '</div>' +
-               '<div class="id">' + r.id + '</div></div>';
+        html =
+          '<div class="card ok">' +
+            '<div class="status">✅ Welcome</div>' +
+            '<div class="name">' + r.name + '</div>' +
+            '<div class="admit-chip">👥 Admit ' + r.tickets + '</div>' +
+            '<div class="tid">' + r.id + '</div>' +
+          '</div>';
       } else {
-        html = '<div class="card bad"><div class="big">⛔ ' + r.msg + '</div>' +
-               (r.name ? '<div class="name">' + r.name + '</div>' : '') +
-               '<div class="id">' + (r.id || '') + '</div></div>';
+        html =
+          '<div class="card bad">' +
+            '<div class="status">⛔ ' + r.msg + '</div>' +
+            (r.name ? '<div class="name">' + r.name + '</div>' : '') +
+            (r.tickets ? '<div class="admit-chip">👥 Admit ' + r.tickets + '</div>' : '') +
+            '<div class="tid">' + (r.id || '') + '</div>' +
+          '</div>';
       }
-      html += '<button class="next" onclick="startScanner()">📷 Scan next</button>';
+      html += '<div style="text-align:center;"><button class="btn" onclick="startScanner()">📷 Scan next guest</button></div>';
       document.getElementById('result').innerHTML = html;
     }
 
     function fail(e) {
       document.getElementById('result').innerHTML =
-        '<div class="card bad">Connection error — check internet and try again</div>' +
-        '<button class="next" onclick="startScanner()">Retry</button>';
+        '<div class="card bad"><div class="status">Connection problem</div>' +
+        '<div class="detail">Could not reach the check-in service.<br>' +
+        (e && e.message ? e.message : '') + '</div></div>' +
+        '<div style="text-align:center;"><button class="btn ghost" onclick="startScanner()">Retry</button></div>';
     }
   </script>
 </body>
