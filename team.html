@@ -243,11 +243,21 @@
       document.getElementById('sRef').textContent = res.ref;
       document.getElementById('sDetail').innerHTML =
         name + ' · Admit ' + admits + '<br>Collect ₹' + res.amount.toLocaleString('en-IN');
-      const passPart = res.passUrl ? ('Your e-pass: ' + res.passUrl + ' ') : '';
-      const waMsg = 'Namaskar ' + name + '! Your booking for बाईपण भारी नाईट 3.0 is confirmed. ' +
-        'Ticket ID: ' + res.ref + ' (Admit ' + admits + '). ' + passPart +
-        'Sunday, 6 September 2026, 6 PM onwards, Balaji Garden Lawn, Nagla Park, Kolhapur. ' +
-        'See you there! — Sisters Squad';
+
+      const GROUP_LINK = 'https://chat.whatsapp.com/J1vVGtzw5pp1DStfUR4ihy?s=cl&p=a&ilr=1';
+      const passPart = res.passUrl ? res.passUrl : '(pass link is being prepared — resend from dashboard if missing)';
+      const waMsg =
+        'Namaskar ' + name + '!\n' +
+        '*Your booking for \u092C\u093E\u0908\u092A\u0923 \u092D\u093E\u0930\u0940 \u0928\u093E\u0908\u091F 3.0 is confirmed !*\n\n' +
+        '*Ticket ID:* ' + res.ref + ' (Admit ' + admits + ')\n\n' +
+        '*Click below \uD83D\uDC47 to download Your e-pass:* ' + passPart + '\n\n' +
+        '\uD83C\uDFAB *Please show this pass at the entry*\n\n' +
+        '\uD83D\uDCE3 *Important:*\n' +
+        'All ticket holders are requested to join our official WhatsApp group to receive all important updates, announcements & event information.\n\n' +
+        '\uD83D\uDC49 *Join the WhatsApp Group:*\n' + GROUP_LINK + '\n\n' +
+        'See you there!\n' +
+        '        - TEAM SISTERS SQUAD';
+
       document.getElementById('waBtn').href = 'https://wa.me/91' + phone + '?text=' + encodeURIComponent(waMsg);
       document.getElementById('formCard').classList.add('hidden');
       document.getElementById('successCard').classList.remove('hidden');
