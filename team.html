@@ -243,10 +243,11 @@
       document.getElementById('sRef').textContent = res.ref;
       document.getElementById('sDetail').innerHTML =
         name + ' · Admit ' + admits + '<br>Collect ₹' + res.amount.toLocaleString('en-IN');
+      const passPart = res.passUrl ? ('Your e-pass: ' + res.passUrl + ' ') : '';
       const waMsg = 'Namaskar ' + name + '! Your booking for बाईपण भारी नाईट 3.0 is confirmed. ' +
-        'Ticket ID: ' + res.ref + ' (Admit ' + admits + '). ' +
+        'Ticket ID: ' + res.ref + ' (Admit ' + admits + '). ' + passPart +
         'Sunday, 6 September 2026, 6 PM onwards, Balaji Garden Lawn, Nagla Park, Kolhapur. ' +
-        'Your e-pass will be sent shortly. See you there! — Sisters Squad';
+        'See you there! — Sisters Squad';
       document.getElementById('waBtn').href = 'https://wa.me/91' + phone + '?text=' + encodeURIComponent(waMsg);
       document.getElementById('formCard').classList.add('hidden');
       document.getElementById('successCard').classList.remove('hidden');
