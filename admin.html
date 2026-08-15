@@ -8,25 +8,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
     body {
-      min-height:100vh;
-      font-family:'Inter',sans-serif;
+      min-height:100vh; font-family:'Inter',sans-serif;
       background:radial-gradient(ellipse at top, #3a0d1a 0%, #2b0a12 42%, #12040a 100%);
-      background-attachment:fixed;
-      color:#f5e9da;
-      padding:0 14px 50px;
+      background-attachment:fixed; color:#f5e9da; padding:0 14px 50px;
     }
 
-    /* ---------- Login gate ---------- */
-    .gate {
-      max-width:380px; margin:80px auto 0; text-align:center;
-    }
-    .gate .lock-icon { font-size:44px; }
-    .gate h1 {
-      font-family:'Playfair Display',serif; font-size:26px; color:#e6b422;
-      margin-top:14px; font-weight:700;
-    }
+    .gate { max-width:380px; margin:80px auto 0; text-align:center; }
+    .gate .lock { font-size:44px; }
+    .gate h1 { font-family:'Playfair Display',serif; font-size:26px; color:#e6b422; margin-top:14px; }
     .gate p { font-size:13px; color:#c9b394; margin-top:8px; }
     .gate input {
       width:100%; margin-top:22px; padding:15px 16px; font-size:16px; text-align:center;
@@ -41,130 +31,123 @@
     }
     .gate .err { color:#ffb3b3; font-size:13px; margin-top:12px; display:none; }
 
-    /* ---------- Header ---------- */
-    .top {
-      max-width:440px; margin:0 auto; padding:24px 0 8px; text-align:center;
-    }
+    .top { max-width:460px; margin:0 auto; padding:22px 0 6px; text-align:center; }
     .top .org { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#c9a227; }
-    .top h1 {
-      font-family:'Playfair Display',serif; font-size:24px; color:#e6b422; margin-top:5px; font-weight:700;
+    .top h1 { font-family:'Playfair Display',serif; font-size:23px; color:#e6b422; margin-top:5px; }
+    .top .sync { margin-top:7px; font-size:11.5px; color:#8f7a5e; }
+    .top .sync .dot {
+      display:inline-block; width:7px; height:7px; border-radius:50%;
+      background:#5fce89; margin-right:5px; vertical-align:1px;
     }
-    .top .refresh {
-      margin-top:8px; font-size:12px; color:#c9b394; cursor:pointer;
-      display:inline-flex; align-items:center; gap:5px;
-    }
+    .top .sync .dot.stale { background:#f0b64a; }
 
-    /* ---------- Stat cards ---------- */
     .stats {
-      max-width:440px; margin:16px auto 0;
-      display:grid; grid-template-columns:repeat(2,1fr); gap:11px;
+      max-width:460px; margin:14px auto 0;
+      display:grid; grid-template-columns:repeat(3,1fr); gap:9px;
     }
     .stat {
-      padding:16px 14px; border-radius:16px;
+      padding:13px 10px; border-radius:14px; text-align:center;
       background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
       border:1px solid rgba(201,162,39,.22);
     }
     .stat .n {
-      font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:#e6b422;
-      line-height:1;
+      font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:#e6b422; line-height:1;
     }
-    .stat .l {
-      font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#b39b74; margin-top:6px;
-    }
+    .stat .l { font-size:9.5px; letter-spacing:1px; text-transform:uppercase; color:#b39b74; margin-top:5px; }
     .stat.rev .n { color:#7fe0a0; }
     .stat.pend .n { color:#f0b64a; }
 
-    /* ---------- Tabs ---------- */
     .tabs {
-      max-width:440px; margin:20px auto 0; display:flex; gap:8px;
+      max-width:460px; margin:16px auto 0; display:flex; gap:6px;
       background:rgba(0,0,0,.25); padding:5px; border-radius:14px;
     }
     .tab {
-      flex:1; padding:11px; text-align:center; font-size:13px; font-weight:600;
+      flex:1; padding:11px 4px; text-align:center; font-size:12.5px; font-weight:600;
       color:#c9b394; border-radius:10px; cursor:pointer; transition:all .2s;
-      display:flex; align-items:center; justify-content:center; gap:6px;
+      display:flex; align-items:center; justify-content:center; gap:5px;
     }
     .tab.active { background:linear-gradient(180deg,#f2ca5a,#e6b422); color:#2b0a12; }
     .tab .badge {
-      background:#c0392b; color:#fff; font-size:11px; font-weight:700;
+      background:#c0392b; color:#fff; font-size:10.5px; font-weight:700;
       min-width:18px; height:18px; border-radius:9px; display:inline-flex;
       align-items:center; justify-content:center; padding:0 5px;
     }
+    .tab .badge.green { background:#1f8a4a; }
     .tab.active .badge { background:#2b0a12; color:#f2ca5a; }
 
-    /* ---------- Search ---------- */
-    .search {
-      max-width:440px; margin:16px auto 0; position:relative;
-    }
+    .search { max-width:460px; margin:14px auto 0; position:relative; }
     .search input {
-      width:100%; padding:13px 16px 13px 42px; font-size:15px;
-      color:#f5e9da; background:rgba(0,0,0,.3);
-      border:1.5px solid rgba(201,162,39,.25); border-radius:12px; outline:none;
+      width:100%; padding:13px 16px 13px 40px; font-size:15px; color:#f5e9da;
+      background:rgba(0,0,0,.3); border:1.5px solid rgba(201,162,39,.25);
+      border-radius:12px; outline:none;
     }
     .search input:focus { border-color:#e6b422; }
-    .search .icon {
-      position:absolute; left:15px; top:50%; transform:translateY(-50%);
-      color:#b39b74; font-size:16px;
-    }
     .search input::placeholder { color:#7a6a55; }
+    .search .sicon { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#b39b74; }
 
-    /* ---------- Booking list ---------- */
-    .list { max-width:440px; margin:14px auto 0; }
+    .list { max-width:460px; margin:12px auto 0; }
     .booking {
       background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.012));
       border:1px solid rgba(201,162,39,.2); border-radius:16px;
-      padding:16px 16px 14px; margin-bottom:12px;
-      animation:slideIn .35s cubic-bezier(.2,1,.4,1);
+      padding:15px 15px 13px; margin-bottom:11px;
+      border-left-width:4px;
+      animation:slideIn .3s cubic-bezier(.2,1,.4,1);
     }
-    @keyframes slideIn { from { opacity:0; transform:translateY(10px); } }
-    @keyframes fadeOut { to { opacity:0; transform:scale(.94); height:0; margin:0; padding:0; border:0; } }
-    .booking.removing { animation:fadeOut .4s forwards; overflow:hidden; }
+    .booking.src-phone  { border-left-color:#6ea8e8; }
+    .booking.src-online { border-left-color:#e6b422; }
+    @keyframes slideIn { from { opacity:0; transform:translateY(8px); } }
+    @keyframes fadeOut { to { opacity:0; transform:scale(.95); } }
+    .booking.removing { animation:fadeOut .35s forwards; }
 
-    .b-top { display:flex; justify-content:space-between; align-items:flex-start; }
-    .b-name { font-size:17px; font-weight:600; color:#fff; }
-    .b-ref { font-size:12px; color:#c9a227; margin-top:2px; letter-spacing:.5px; }
+    .b-top { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+    .b-name { font-size:16.5px; font-weight:600; color:#fff; }
+    .b-ref { font-size:11.5px; color:#c9a227; margin-top:2px; letter-spacing:.4px; }
+    .b-src {
+      font-size:9.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+      padding:3px 8px; border-radius:6px; margin-left:6px;
+    }
+    .b-src.phone  { background:rgba(110,168,232,.15); color:#9cc4f0; border:1px solid rgba(110,168,232,.35); }
+    .b-src.online { background:rgba(230,180,34,.13); color:#e6b422; border:1px solid rgba(230,180,34,.35); }
     .b-badge {
       font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase;
-      padding:4px 10px; border-radius:8px; white-space:nowrap;
+      padding:4px 9px; border-radius:8px; white-space:nowrap;
     }
     .bg-pending  { background:rgba(240,182,74,.18); color:#f0b64a; border:1px solid rgba(240,182,74,.4); }
     .bg-approved { background:rgba(127,224,160,.15); color:#7fe0a0; border:1px solid rgba(127,224,160,.35); }
     .bg-rejected { background:rgba(224,90,90,.15); color:#ff9d9d; border:1px solid rgba(224,90,90,.35); }
-    .bg-confirmed{ background:rgba(140,180,240,.15); color:#a9c8f0; border:1px solid rgba(140,180,240,.3); }
+    .bg-sent     { background:rgba(127,224,160,.15); color:#7fe0a0; border:1px solid rgba(127,224,160,.35); }
     .bg-checked  { background:rgba(201,162,39,.18); color:#e6b422; border:1px solid rgba(201,162,39,.4); }
 
     .b-meta {
-      display:flex; flex-wrap:wrap; gap:6px 16px; margin-top:12px;
-      font-size:13px; color:#d8c3a5;
+      display:flex; flex-wrap:wrap; gap:5px 14px; margin-top:11px;
+      font-size:12.5px; color:#d8c3a5;
     }
-    .b-meta .item { display:flex; align-items:center; gap:5px; }
-    .b-meta .item i { color:#b39b74; font-size:14px; }
     .b-amount { color:#7fe0a0; font-weight:700; }
 
-    .b-actions { display:flex; gap:9px; margin-top:14px; }
+    .b-actions { display:flex; gap:8px; margin-top:13px; }
     .b-actions button, .b-actions a {
-      flex:1; padding:11px; font-size:13.5px; font-weight:700; text-align:center;
+      flex:1; padding:11px 6px; font-size:13px; font-weight:700; text-align:center;
       border:none; border-radius:11px; cursor:pointer; text-decoration:none;
-      display:flex; align-items:center; justify-content:center; gap:6px;
       font-family:'Inter',sans-serif;
+      display:flex; align-items:center; justify-content:center; gap:5px;
     }
     .btn-approve { color:#0d3d20; background:linear-gradient(180deg,#8fe6ab,#5fce89); }
-    .btn-reject  { color:#4a0f0f; background:rgba(224,90,90,.25); border:1px solid rgba(224,90,90,.5)!important; }
+    .btn-reject  { color:#ffb3b3; background:rgba(224,90,90,.18); border:1px solid rgba(224,90,90,.45) !important; }
     .btn-wa      { color:#fff; background:linear-gradient(180deg,#3ec468,#25a052); }
-    .btn-call    { color:#e6b422; background:transparent; border:1.5px solid rgba(201,162,39,.5)!important; flex:0 0 46px; }
+    .btn-done    { color:#e6b422; background:transparent; border:1.5px solid rgba(201,162,39,.5) !important; }
+    .btn-call    { color:#e6b422; background:transparent; border:1.5px solid rgba(201,162,39,.5) !important; flex:0 0 46px; }
 
-    .empty { text-align:center; color:#9a8368; padding:50px 20px; font-size:14px; }
-    .empty i { font-size:40px; display:block; margin-bottom:12px; opacity:.5; }
-
-    .loading { text-align:center; padding:50px; color:#c9a227; font-size:14px; }
-    .spin { animation:rot 1s linear infinite; display:inline-block; }
+    .empty { text-align:center; color:#9a8368; padding:46px 20px 30px; font-size:14px; }
+    .empty .big { font-size:36px; display:block; margin-bottom:10px; opacity:.6; }
+    .loading { text-align:center; padding:46px; color:#c9a227; font-size:14px; }
+    .spin { display:inline-block; animation:rot 1s linear infinite; }
     @keyframes rot { to { transform:rotate(360deg); } }
 
     .toast {
-      position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
-      background:#1a0508; color:#f5e9da; padding:14px 22px; border-radius:12px;
-      border:1px solid rgba(201,162,39,.5); font-size:14px; z-index:99;
-      opacity:0; transition:opacity .3s; pointer-events:none; max-width:90%; text-align:center;
+      position:fixed; bottom:22px; left:50%; transform:translateX(-50%);
+      background:#1a0508; color:#f5e9da; padding:13px 20px; border-radius:12px;
+      border:1px solid rgba(201,162,39,.5); font-size:13.5px; z-index:99;
+      opacity:0; transition:opacity .3s; pointer-events:none; max-width:92%; text-align:center;
     }
     .toast.show { opacity:1; }
     .hidden { display:none; }
@@ -172,63 +155,56 @@
 </head>
 <body>
 
-  <!-- LOGIN -->
   <div class="gate" id="gate">
-    <div class="lock-icon">🔐</div>
+    <div class="lock">🔐</div>
     <h1>Team Dashboard</h1>
-    <p>बाईपण भारी नाईट 3.0<br>Enter team password to continue</p>
+    <p>बाईपण भारी नाईट 3.0<br>Enter team password</p>
     <input id="pw" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')login()">
     <button onclick="login()">Open Dashboard</button>
     <div class="err" id="gateErr">Wrong password — try again</div>
   </div>
 
-  <!-- APP -->
   <div id="app" class="hidden">
     <div class="top">
       <div class="org">Sisters Squad · Kolhapur</div>
       <h1>Team Dashboard</h1>
-      <div class="refresh" onclick="loadAll()"><i class="ti ti-refresh" id="refIcon"></i> Tap to refresh</div>
+      <div class="sync" id="sync"><span class="dot"></span>Auto-updating · tap any stat to refresh now</div>
     </div>
 
-    <div class="stats" id="stats"></div>
+    <div class="stats" id="stats" onclick="loadAll(true)"></div>
 
     <div class="tabs">
-      <div class="tab active" id="tabPending" onclick="switchTab('pending')">
-        Pending <span class="badge hidden" id="pendBadge">0</span>
+      <div class="tab active" id="tab-pending" onclick="switchTab('pending')">
+        Pending <span class="badge hidden" id="badge-pending">0</span>
       </div>
-      <div class="tab" id="tabAll" onclick="switchTab('all')">All bookings</div>
+      <div class="tab" id="tab-tosend" onclick="switchTab('tosend')">
+        To Send <span class="badge green hidden" id="badge-tosend">0</span>
+      </div>
+      <div class="tab" id="tab-all" onclick="switchTab('all')">All</div>
     </div>
 
     <div class="search">
-      <span class="icon"><i class="ti ti-search"></i></span>
+      <span class="sicon">🔍</span>
       <input id="searchBox" placeholder="Search name, number or ref…" oninput="render()">
     </div>
 
-    <div class="list" id="list">
-      <div class="loading"><span class="spin"><i class="ti ti-loader-2"></i></span> Loading…</div>
-    </div>
+    <div class="list" id="list"><div class="loading"><span class="spin">⏳</span> Loading…</div></div>
   </div>
 
   <div class="toast" id="toast"></div>
 
-  <link href="https://unpkg.com/@tabler/icons-webfont@2.47.0/dist/tabler-icons.min.css" rel="stylesheet">
   <script>
     // ================= CONFIG =================
     const API = 'https://script.google.com/macros/s/AKfycbxh3kl8PDG8PZZCYqoRI5ihv_6t3RP2NrgnWN2NoQCuK50CrmfBQBDUR22k0iTJEmkufg/exec';
+    const REFRESH_SECONDS = 30;
     // ==========================================
 
-    let PW = '';
-    let allBookings = [];
-    let currentTab = 'pending';
+    let PW = '', allBookings = [], currentTab = 'pending', refreshTimer = null, lastSync = 0;
 
-    // ---------- Login ----------
     function login() {
       const pw = document.getElementById('pw').value.trim();
       if (!pw) return;
-      PW = pw;
-      document.getElementById('gateErr').style.display = 'none';
       document.querySelector('.gate button').textContent = 'Checking…';
-      // validate by trying to load stats
       fetch(API + '?action=stats&pw=' + encodeURIComponent(pw))
         .then(r => r.json())
         .then(res => {
@@ -237,11 +213,13 @@
             document.querySelector('.gate button').textContent = 'Open Dashboard';
             return;
           }
-          try { sessionStorage.setItem('bpb3pw', pw); } catch(e){}
+          PW = pw;
+          try { sessionStorage.setItem('bpb3pw', pw); } catch (e) {}
           document.getElementById('gate').classList.add('hidden');
           document.getElementById('app').classList.remove('hidden');
           renderStats(res);
           loadBookings();
+          startAutoRefresh();
         })
         .catch(() => {
           document.getElementById('gateErr').textContent = 'Connection problem — try again';
@@ -250,58 +228,81 @@
         });
     }
 
-    // ---------- Load ----------
-    function loadAll() {
-      const icon = document.getElementById('refIcon');
-      icon.classList.add('spin');
+    // ---------- Auto-refresh ----------
+    function startAutoRefresh() {
+      if (refreshTimer) clearInterval(refreshTimer);
+      refreshTimer = setInterval(() => {
+        if (document.visibilityState === 'visible') loadAll(false);
+      }, REFRESH_SECONDS * 1000);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && Date.now() - lastSync > 15000) loadAll(false);
+      });
+    }
+
+    function loadAll(showToast) {
       Promise.all([
         fetch(API + '?action=stats&pw=' + encodeURIComponent(PW)).then(r => r.json()),
         fetch(API + '?action=bookings&pw=' + encodeURIComponent(PW)).then(r => r.json())
       ]).then(([stats, bk]) => {
         if (stats.ok) renderStats(stats);
         if (bk.ok) { allBookings = bk.bookings; render(); }
-        icon.classList.remove('spin');
-      }).catch(() => { icon.classList.remove('spin'); toast('Connection problem'); });
+        lastSync = Date.now();
+        setSync(true);
+        if (showToast) toast('Refreshed');
+      }).catch(() => setSync(false));
     }
 
     function loadBookings() {
       fetch(API + '?action=bookings&pw=' + encodeURIComponent(PW))
         .then(r => r.json())
-        .then(res => { if (res.ok) { allBookings = res.bookings; render(); } })
+        .then(res => { if (res.ok) { allBookings = res.bookings; render(); lastSync = Date.now(); } })
         .catch(() => toast('Could not load bookings'));
+    }
+
+    function setSync(ok) {
+      const dot = document.querySelector('#sync .dot');
+      if (dot) dot.classList.toggle('stale', !ok);
+      const s = document.getElementById('sync');
+      if (s) s.childNodes[1].textContent = ok ? 'Auto-updating · tap any stat to refresh now'
+                                             : 'Connection issue — retrying…';
     }
 
     // ---------- Stats ----------
     function renderStats(s) {
-      const rev = '₹' + (s.revenue || 0).toLocaleString('en-IN');
       document.getElementById('stats').innerHTML =
-        stat('ti-ticket', s.ticketsSold || 0, 'Tickets sold', '') +
-        stat('ti-cash', rev, 'Revenue', 'rev') +
-        stat('ti-clock', s.pending || 0, 'Pending', 'pend') +
-        stat('ti-door-enter', s.checkedIn || 0, 'Checked in', '');
-      const pb = document.getElementById('pendBadge');
-      if (s.pending > 0) { pb.textContent = s.pending; pb.classList.remove('hidden'); }
-      else pb.classList.add('hidden');
+        stat('₹' + (s.revenue || 0).toLocaleString('en-IN'), 'Revenue', 'rev') +
+        stat(s.ticketsSold || 0, 'Tickets sold', '') +
+        stat((s.adults || 0) + ' / ' + (s.kids || 0), 'Adults / Kids', '') +
+        stat(s.pending || 0, 'Pending', 'pend') +
+        stat(s.toSend || 0, 'To send', '') +
+        stat(s.checkedIn || 0, 'Checked in', '');
+      badge('badge-pending', s.pending);
+      badge('badge-tosend', s.toSend);
     }
-    function stat(icon, n, label, cls) {
-      return '<div class="stat ' + cls + '"><div class="n">' + n + '</div>' +
-             '<div class="l">' + label + '</div></div>';
+    function stat(n, l, cls) {
+      return '<div class="stat ' + cls + '"><div class="n">' + n + '</div><div class="l">' + l + '</div></div>';
+    }
+    function badge(id, n) {
+      const el = document.getElementById(id);
+      if (n > 0) { el.textContent = n; el.classList.remove('hidden'); }
+      else el.classList.add('hidden');
     }
 
     // ---------- Tabs ----------
     function switchTab(t) {
       currentTab = t;
-      document.getElementById('tabPending').classList.toggle('active', t === 'pending');
-      document.getElementById('tabAll').classList.toggle('active', t === 'all');
+      ['pending','tosend','all'].forEach(x =>
+        document.getElementById('tab-' + x).classList.toggle('active', x === t));
       render();
     }
 
-    // ---------- Render list ----------
+    // ---------- Render ----------
     function render() {
       const q = document.getElementById('searchBox').value.trim().toLowerCase();
       let items = allBookings.slice();
 
       if (currentTab === 'pending') items = items.filter(b => b.status === 'PENDING');
+      if (currentTab === 'tosend')  items = items.filter(b => b.needsSending);
       if (q) items = items.filter(b =>
         (b.name || '').toLowerCase().includes(q) ||
         String(b.phone || '').includes(q) ||
@@ -309,86 +310,95 @@
 
       const list = document.getElementById('list');
       if (!items.length) {
-        list.innerHTML = '<div class="empty"><i class="ti ti-inbox"></i>' +
-          (currentTab === 'pending' ? 'No pending bookings — all caught up!' : 'No bookings found') + '</div>';
+        const msgs = {
+          pending: 'No pending bookings — all caught up!',
+          tosend:  'Nothing to send — every pass delivered!',
+          all:     'No bookings found'
+        };
+        list.innerHTML = '<div class="empty"><span class="big">🎟️</span>' + msgs[currentTab] + '</div>';
         return;
       }
       list.innerHTML = items.map(card).join('');
     }
 
     function card(b) {
-      const isOnline = b.channel === 'online';
-      const admits = isOnline ? (Number(b.adults) + Number(b.kids)) : b.tickets;
+      const admits = Number(b.adults) + Number(b.kids);
+      const srcClass = b.source === 'phone' ? 'phone' : 'online';
 
-      let badge, badgeClass;
-      if (b.checkedIn) { badge = 'Checked in'; badgeClass = 'bg-checked'; }
-      else if (b.status === 'PENDING')   { badge = 'Pending'; badgeClass = 'bg-pending'; }
-      else if (b.status === 'APPROVED')  { badge = 'Approved'; badgeClass = 'bg-approved'; }
-      else if (b.status === 'REJECTED')  { badge = 'Rejected'; badgeClass = 'bg-rejected'; }
-      else { badge = 'Confirmed'; badgeClass = 'bg-confirmed'; }
+      let badgeHtml, badgeClass;
+      if (b.checkedIn)                    { badgeHtml = 'Checked in'; badgeClass = 'bg-checked'; }
+      else if (b.status === 'PENDING')    { badgeHtml = 'Pending'; badgeClass = 'bg-pending'; }
+      else if (b.status === 'REJECTED')   { badgeHtml = 'Rejected'; badgeClass = 'bg-rejected'; }
+      else if (b.status === 'APPROVED' && b.waSent) { badgeHtml = 'Sent ✓'; badgeClass = 'bg-sent'; }
+      else if (b.status === 'APPROVED')   { badgeHtml = 'Approved'; badgeClass = 'bg-approved'; }
+      else                                { badgeHtml = b.status; badgeClass = 'bg-approved'; }
 
-      let meta = '<div class="item"><i class="ti ti-users"></i>Admit ' + admits + '</div>';
-      if (isOnline) {
-        meta += '<div class="item"><i class="ti ti-user"></i>' + b.adults + ' adult' + (b.adults>1?'s':'') +
-                (b.kids>0 ? ', ' + b.kids + ' kid' + (b.kids>1?'s':'') : '') + '</div>';
-        meta += '<div class="item"><i class="ti ti-cash"></i><span class="b-amount">₹' +
-                Number(b.amount).toLocaleString('en-IN') + '</span></div>';
-      }
-      meta += '<div class="item"><i class="ti ti-phone"></i>' + b.phone + '</div>';
+      let meta = '<div>👥 Admit ' + admits + '</div>' +
+                 '<div>' + b.adults + ' adult' + (b.adults > 1 ? 's' : '') +
+                 (b.kids > 0 ? ', ' + b.kids + ' kid' + (b.kids > 1 ? 's' : '') : '') + '</div>' +
+                 '<div class="b-amount">₹' + Number(b.amount).toLocaleString('en-IN') + '</div>' +
+                 '<div>📞 ' + b.phone + '</div>';
 
       let actions = '';
-      if (isOnline && b.status === 'PENDING') {
-        actions = '<div class="b-actions">' +
-          '<button class="btn-approve" onclick="approve(\'' + b.ref + '\', this)"><i class="ti ti-check"></i>Approve</button>' +
-          '<button class="btn-reject" onclick="reject(\'' + b.ref + '\', this)"><i class="ti ti-x"></i>Reject</button>' +
-          '<a class="btn-call" href="tel:' + b.phone + '"><i class="ti ti-phone"></i></a>' +
-          '</div>';
-      } else if (b.waLink) {
-        actions = '<div class="b-actions">' +
-          '<a class="btn-wa" href="' + b.waLink + '" target="_blank"><i class="ti ti-brand-whatsapp"></i>Send pass on WhatsApp</a>' +
-          '<a class="btn-call" href="tel:' + b.phone + '"><i class="ti ti-phone"></i></a>' +
-          '</div>';
+      if (b.status === 'PENDING') {
+        actions =
+          '<button class="btn-approve" onclick="approve(\'' + b.ref + '\', this)">✓ Approve</button>' +
+          '<button class="btn-reject" onclick="reject(\'' + b.ref + '\', this)">✕ Reject</button>' +
+          '<a class="btn-call" href="tel:' + b.phone + '">📞</a>';
+      } else if (b.needsSending) {
+        actions =
+          '<a class="btn-wa" href="' + b.waLink + '" target="_blank">Send pass on WhatsApp</a>' +
+          '<button class="btn-done" onclick="markSent(\'' + b.ref + '\', this)">Mark sent</button>';
+      } else if (b.status === 'APPROVED' && b.waLink) {
+        actions =
+          '<a class="btn-wa" href="' + b.waLink + '" target="_blank">Resend on WhatsApp</a>' +
+          '<a class="btn-call" href="tel:' + b.phone + '">📞</a>';
       }
+      if (actions) actions = '<div class="b-actions">' + actions + '</div>';
 
-      return '<div class="booking" id="bk-' + b.ref + '">' +
+      return '<div class="booking src-' + srcClass + '" id="bk-' + b.ref + '">' +
         '<div class="b-top"><div><div class="b-name">' + b.name + '</div>' +
-        '<div class="b-ref">' + b.ref + (isOnline ? ' · online' : ' · phone') + '</div></div>' +
-        '<div class="b-badge ' + badgeClass + '">' + badge + '</div></div>' +
+        '<div class="b-ref">' + b.ref +
+        '<span class="b-src ' + srcClass + '">' + (srcClass === 'phone' ? 'Phone' : 'Online') + '</span></div></div>' +
+        '<div class="b-badge ' + badgeClass + '">' + badgeHtml + '</div></div>' +
         '<div class="b-meta">' + meta + '</div>' + actions + '</div>';
     }
 
     // ---------- Actions ----------
-    function approve(ref, btn) {
-      btn.innerHTML = '<span class="spin"><i class="ti ti-loader-2"></i></span>';
+    function doAction(url, ref, btn, okMsg, restoreHtml) {
       btn.disabled = true;
-      fetch(API + '?action=approve&pw=' + encodeURIComponent(PW) + '&ref=' + encodeURIComponent(ref))
+      const prev = btn.innerHTML;
+      btn.innerHTML = '<span class="spin">⏳</span>';
+      fetch(url)
         .then(r => r.json())
         .then(res => {
           if (res.ok) {
-            toast('✅ ' + ref + ' approved — pass sent!');
+            toast(okMsg);
             const el = document.getElementById('bk-' + ref);
             if (el) el.classList.add('removing');
-            setTimeout(loadAll, 700);
-          } else { toast('⚠️ ' + (res.msg || 'Failed')); btn.disabled = false; btn.innerHTML = '<i class="ti ti-check"></i>Approve'; }
+            setTimeout(() => loadAll(false), 500);
+          } else {
+            toast('⚠️ ' + (res.msg || 'Failed'));
+            btn.disabled = false; btn.innerHTML = restoreHtml || prev;
+          }
         })
-        .catch(() => { toast('Connection problem'); btn.disabled = false; btn.innerHTML = '<i class="ti ti-check"></i>Approve'; });
+        .catch(() => { toast('Connection problem'); btn.disabled = false; btn.innerHTML = restoreHtml || prev; });
+    }
+
+    function approve(ref, btn) {
+      doAction(API + '?action=approve&pw=' + encodeURIComponent(PW) + '&ref=' + encodeURIComponent(ref),
+        ref, btn, '✅ ' + ref + ' approved — now in To Send', '✓ Approve');
     }
 
     function reject(ref, btn) {
-      if (!confirm('Reject booking ' + ref + '? The customer will not get a pass.')) return;
-      btn.innerHTML = '<span class="spin"><i class="ti ti-loader-2"></i></span>';
-      btn.disabled = true;
-      fetch(API + '?action=reject&pw=' + encodeURIComponent(PW) + '&ref=' + encodeURIComponent(ref))
-        .then(r => r.json())
-        .then(res => {
-          if (res.ok) {
-            toast('Booking ' + ref + ' rejected');
-            const el = document.getElementById('bk-' + ref);
-            if (el) el.classList.add('removing');
-            setTimeout(loadAll, 700);
-          } else { toast('⚠️ ' + (res.msg || 'Failed')); btn.disabled = false; btn.innerHTML = '<i class="ti ti-x"></i>Reject'; }
-        })
-        .catch(() => { toast('Connection problem'); btn.disabled = false; btn.innerHTML = '<i class="ti ti-x"></i>Reject'; });
+      if (!confirm('Reject booking ' + ref + '? The customer will NOT get a pass.')) return;
+      doAction(API + '?action=reject&pw=' + encodeURIComponent(PW) + '&ref=' + encodeURIComponent(ref),
+        ref, btn, ref + ' rejected', '✕ Reject');
+    }
+
+    function markSent(ref, btn) {
+      doAction(API + '?action=marksent&pw=' + encodeURIComponent(PW) + '&ref=' + encodeURIComponent(ref),
+        ref, btn, '✅ ' + ref + ' marked as sent', 'Mark sent');
     }
 
     // ---------- Toast ----------
@@ -397,14 +407,14 @@
       const t = document.getElementById('toast');
       t.textContent = msg; t.classList.add('show');
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
     }
 
-    // ---------- Auto-login if remembered ----------
-    (function() {
-      let saved = '';
-      try { saved = sessionStorage.getItem('bpb3pw') || ''; } catch(e){}
-      if (saved) { document.getElementById('pw').value = saved; login(); }
+    // ---------- Auto-login ----------
+    (function () {
+      let s = '';
+      try { s = sessionStorage.getItem('bpb3pw') || ''; } catch (e) {}
+      if (s) { document.getElementById('pw').value = s; login(); }
     })();
   </script>
 </body>
