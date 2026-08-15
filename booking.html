@@ -285,7 +285,7 @@
     <div class="done-text">
       Reference: <b style="color:#e6b422;" id="doneRef">BPB3-501</b><br><br>
       Our team is verifying your payment.<br>
-      Your e-pass will arrive by <b>email</b> shortly after.<br><br>
+      Your e-pass will arrive by <b>WhatsApp/email</b> shortly after.<br><br>
       See you on <b>6th September</b> — it's going to be a beautiful evening!
     </div>
   </div>
@@ -298,11 +298,11 @@
   <script>
     // ================= CONFIG =================
     const API      = 'https://script.google.com/macros/s/AKfycbxh3kl8PDG8PZZCYqoRI5ihv_6t3RP2NrgnWN2NoQCuK50CrmfBQBDUR22k0iTJEmkufg/exec';
-    const UPI_ID   = 'nikhil.solankure@ybl';
-    const UPI_NAME = 'Sisters Squad';
-    const WHATSAPP = '918390605652';   // country code + number, no +
+    const UPI_ID = 'nayansolankure-1@okaxis';
+    const UPI_NAME = 'Nayan Solankure';
+    const WHATSAPP = '917719918989';   // country code + number, no +
     const PRICE_ADULT = 500, PRICE_KID = 200;
-    const MAX_ADULTS = 5, MAX_KIDS = 3;
+    const MAX_ADULTS = 20, MAX_KIDS = 10;
     // ==========================================
 
     let adults = 1, kids = 0;
@@ -338,7 +338,6 @@
 
       if (name.length < 2)          return showErr('Please enter your full name');
       if (!/^[0-9]{10}$/.test(phone)) return showErr('Please enter a 10-digit mobile number');
-      if (!email)                   return showErr('Please enter your email — your e-pass is sent there');
 
       const btn = document.getElementById('bookBtn');
       btn.disabled = true; btn.textContent = 'Reserving your booking…';
