@@ -241,16 +241,23 @@
 
     function showSuccess(res, name, phone) {
       const admits = adults + kids;
+
+      const parts = [];
+      if (adults > 0) parts.push(adults + ' Adult' + (adults > 1 ? 's' : ''));
+      if (kids > 0)   parts.push(kids + ' Kid' + (kids > 1 ? 's' : ''));
+      const admitStr = 'Admit ' + admits + ' (' + parts.join(' + ') + ')';
+
       document.getElementById('sRef').textContent = res.ref;
       document.getElementById('sDetail').innerHTML =
-        name + ' · Admit ' + admits + '<br>Collect ₹' + res.amount.toLocaleString('en-IN');
+        name + '<br>' + admitStr + '<br>Collect ₹' + res.amount.toLocaleString('en-IN');
 
       const GROUP_LINK = 'https://chat.whatsapp.com/J1vVGtzw5pp1DStfUR4ihy?s=cl&p=a&ilr=1';
-      const passPart = res.passUrl ? res.passUrl : '(pass link is being prepared — resend from dashboard if missing)';
+      const passPart = res.passUrl ? res.passUrl : '(pass link is being prepared, resend from dashboard if missing)';
       const waMsg =
         'Namaskar ' + name + '!\n' +
         '*Your booking for \u092C\u093E\u0908\u092A\u0923 \u092D\u093E\u0930\u0940 \u0928\u093E\u0908\u091F 3.0 is confirmed !*\n\n' +
-        '*Ticket ID:* ' + res.ref + ' (Admit ' + admits + ')\n\n' +
+        '*Ticket ID:* ' + res.ref + '\n' +
+        '*' + admitStr + '*\n\n' +
         '*Click below \uD83D\uDC47 to download Your e-pass:* ' + passPart + '\n\n' +
         '\uD83C\uDFAB *Please show this pass at the entry*\n\n' +
         '\uD83D\uDCE3 *Important:*\n' +
