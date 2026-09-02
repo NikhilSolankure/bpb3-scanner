@@ -10,14 +10,19 @@
   <style>
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
+    html {
+      background:#35081b;
+      min-height:100%;
+    }
+
     body {
       min-height:100vh;
-      font-family:'Inter',sans-serif;s
+      font-family:'Inter',sans-serif;
       background:radial-gradient(ellipse at top, #5c1733 0%, #4A1229 45%, #35081b 100%);
       color:#F5E9DA;
       display:flex; flex-direction:column; align-items:center;
       padding:0 16px 40px;
-      touch-action: manipulation;
+      touch-action:manipulation;
     }
 
     /* ---------- Header ---------- */
@@ -187,10 +192,9 @@
     // ==================
 
     let scanner;
-
-    /* ---------- Feedback: sound + vibration ---------- */
     let audioCtx = null;
 
+    /* ---------- Feedback: sound + vibration ---------- */
     function beep(freqs, duration, gap) {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -199,39 +203,44 @@
           const t0 = audioCtx.currentTime + i * gap;
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
-          osc.type = 'sine';
+          osc.type = 'square';
           osc.frequency.value = f;
           gain.gain.setValueAtTime(0.0001, t0);
-          gain.gain.exponentialRampToValueAtTime(0.4, t0 + 0.01);
+          gain.gain.exponentialRampToValueAtTime(1.0, t0 + 0.005);
+          gain.gain.setValueAtTime(1.0, t0 + duration * 0.7);
           gain.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
-          osc.connect(gain); gain.connect(audioCtx.destination);
-          osc.start(t0); osc.stop(t0 + duration + 0.02);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(t0);
+          osc.stop(t0 + duration + 0.02);
         });
       } catch (e) {}
     }
 
     function feedbackOk() {
-      beep([880, 1320], 0.16, 0.13);            // rising: ding-DING
-      if (navigator.vibrate) navigator.vibrate(120);
+      beep([1200, 1800], 0.14, 0.12);
+      if (navigator.vibrate) navigator.vibrate(150);
     }
 
     function feedbackBad() {
-      beep([220, 180], 0.30, 0.28);             // falling: low buzz
-      if (navigator.vibrate) navigator.vibrate([90, 70, 90, 70, 200]);
+      beep([400, 300, 400, 300], 0.18, 0.20);
+      if (navigator.vibrate) navigator.vibrate([100, 80, 100, 80, 250]);
     }
 
-    /* ---------- Scanner ---------- */
-    function startScanner() {
-      document.getElementById('result').innerHTML = '';
-      document.getElementById('startBtn').style.display = 'none';
-      document.getElementById('scanIdle').style.display = 'none';
-      document.getElementById('scanWrap').classList.add('scanning');
-
-      // Unlock audio on this user gesture so later beeps are allowed to play
+    function unlockAudio() {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') audioCtx.resume();
       } catch (e) {}
+    }
+
+    /* ---------- Scanner ---------- */
+    function startScanner() {
+      unlockAudio();
+      document.getElementById('result').innerHTML = '';
+      document.getElementById('startBtn').style.display = 'none';
+      document.getElementById('scanIdle').style.display = 'none';
+      document.getElementById('scanWrap').classList.add('scanning');
 
       if (typeof Html5Qrcode === 'undefined') {
         showError('Scanner library failed to load. Check internet, or use the ticket number box below.');
@@ -240,7 +249,7 @@
 
       scanner = new Html5Qrcode('reader');
       scanner.start({ facingMode: 'environment' }, { fps: 10, qrbox: 220 }, onScan)
-        .catch(function(err) {
+        .catch(function (err) {
           document.getElementById('startBtn').style.display = '';
           document.getElementById('scanIdle').style.display = '';
           document.getElementById('scanWrap').classList.remove('scanning');
@@ -250,7 +259,9 @@
 
     function stopScanner() {
       document.getElementById('scanWrap').classList.remove('scanning');
-      if (scanner) { try { scanner.stop().then(() => scanner.clear()); } catch (e) {} }
+      if (scanner) {
+        try { scanner.stop().then(function () { scanner.clear(); }); } catch (e) {}
+      }
     }
 
     function showError(msg) {
@@ -264,6 +275,7 @@
     }
 
     function manualCheck() {
+      unlockAudio();
       let v = document.getElementById('manualId').value.trim();
       if (!v) return;
       if (/^\d+$/.test(v)) v = 'BPB3-' + v.padStart(3, '0');
@@ -280,7 +292,7 @@
         '<div class="card wait"><div class="status">Checking</div>' +
         '<div class="name" style="font-size:22px;">' + id + '</div></div>';
       fetch(API + '?ticket=' + encodeURIComponent(id))
-        .then(r => r.json())
+        .then(function (r) { return r.json(); })
         .then(show)
         .catch(fail);
     }
