@@ -246,6 +246,14 @@
     }
 
     function show(r) {
+      const breakdown = (r.adults || r.kids)
+        ? '<div class="detail" style="margin-top:8px;font-size:16px;color:#fff;">' +
+            (r.adults ? r.adults + ' Adult' + (r.adults > 1 ? 's' : '') : '') +
+            (r.adults && r.kids ? ' &nbsp;·&nbsp; ' : '') +
+            (r.kids ? r.kids + ' Kid' + (r.kids > 1 ? 's' : '') : '') +
+          '</div>'
+        : '';
+
       let html;
       if (r.ok) {
         html =
@@ -253,6 +261,7 @@
             '<div class="status">✅ Welcome</div>' +
             '<div class="name">' + r.name + '</div>' +
             '<div class="admit-chip">👥 Admit ' + r.tickets + '</div>' +
+            breakdown +
             '<div class="tid">' + r.id + '</div>' +
           '</div>';
       } else {
@@ -261,6 +270,7 @@
             '<div class="status">⛔ ' + r.msg + '</div>' +
             (r.name ? '<div class="name">' + r.name + '</div>' : '') +
             (r.tickets ? '<div class="admit-chip">👥 Admit ' + r.tickets + '</div>' : '') +
+            breakdown +
             '<div class="tid">' + (r.id || '') + '</div>' +
           '</div>';
       }
